@@ -127,6 +127,72 @@ class Db
 			}			
         }
     }
-
+	
+	public function selectStudents()
+	{
+		$query= "SELECT * FROM php_project.students";
+		$result= $this->_db->query($query);
+		$table=array();
+		if ($result->rowCount() != 0){
+			while($row = $result->fetch()){
+				$table[] = array ($row->enrolment, $row->name, $row->surname , $row->password , $this->getPercentage($row->enrolment) );
+			}
+		}
+		return $table;
+	}
+	
+	public function getPercentage($enrolment)
+	{
+		$query = 'SELECT COUNT(DISTINCT answers.enrolment) / COUNT(DISTINCT queries.query_id) as result
+			      FROM answers , queries 
+				  WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
+        $result = $this->_db->query($query);
+        $row = $result->fetch();	
+		return floatval($row->result)  * 100 ;
+	}
+	
+	public function getStudentAnswers($enrolment)
+	{
+		$query = 'SELECT DISTINCT id_level  , query_nb  , question , answer
+			      FROM answers , queries 
+				  WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
+        $result = $this->_db->query($query);
+		$table=array();
+		if ($result->rowCount() != 0){
+			while($row = $result->fetch()){
+				$table[] = array ($row->id_level, $row->query_nb, $row->question, $row->answer);
+			}
+		}
+		return $table ;
+	}
+	
+	public function selectLevels()
+	{
+		$query = 'SELECT `id_levels`, `level_nb`, `description` FROM `levels` '; 
+        $result = $this->_db->query($query);
+		$table=array();
+		if ($result->rowCount() != 0){
+			while($row = $result->fetch()){
+				$table[] = array ($row->id_levels,$row->level_nb,$row->description);
+			}
+		}
+		return $table ;
+	}
+	
+	public function selectQueries($id)
+	{
+		$query = 'SELECT `query_id`, `query_nb`, `question`, `num_level`, `id_level`, `author`, `last_update` , topic FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
+        $result = $this->_db->query($query);
+		$table=array();
+		if ($result->rowCount() != 0){
+			while($row = $result->fetch()){
+				$table[] = array ($row->query_id,$row->query_nb,$row->question,$row->num_level,$row->id_level, $row->author, $row->last_update , $row->topic);
+			}
+		}
+		return $table ;
+	}
+	
+	
+	
 }
 ?>

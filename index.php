@@ -44,6 +44,14 @@ switch($action)
         require_once(CONTROLLER . 'importTeacherController.php');
         $controller = new importTeacherController();
         break;
+    case 'listStudentAnswers':
+        require_once(CONTROLLER . 'listStudentsAnswersController.php');
+        $controller = new listStudentsAnswersController();
+        break;
+	case 'export':
+        require_once(CONTROLLER . 'exportController.php');
+        $controller = new exportController();
+        break;
     default: 
         require_once( CONTROLLER . 'loginController.php');	
         $controller = new loginController();

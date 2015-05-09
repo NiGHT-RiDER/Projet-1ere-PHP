@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.3.10
+-- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Ven 08 Mai 2015 à 15:53
--- Version du serveur :  5.6.24
--- Version de PHP :  5.4.38
+-- Client :  127.0.0.1
+-- Généré le :  Sam 09 Mai 2015 à 15:13
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `editeur` varchar(20) NOT NULL,
   `pays` char(1) DEFAULT NULL,
   `annee_edition` int(11) DEFAULT NULL,
-  `prix` double NOT NULL
+  `prix` double NOT NULL,
+  PRIMARY KEY (`isbn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -88,16 +89,6 @@ INSERT INTO `albums` (`isbn`, `titre`, `serie`, `scenariste`, `dessinateur`, `co
 ('2-88257-000-4', 'Nitroglycérine', 'Lucky Luke', 'Guy Vidal', 'Morris', NULL, 'Dargaud', 'f', 1987, 5),
 ('2-895-000123', 'Idées Noires', NULL, NULL, 'Franquin', NULL, 'Fluide Glacial', 'f', 1981, 10),
 ('2-908-46271-0', 'FAITES GAFFE A LAGAFFE', 'Gaston', 'Franquin', 'Franquin', 'Fanny', 'Dupuis', 'b', 1996, 6);
-
---
--- Index pour les tables exportées
---
-
---
--- Index pour la table `albums`
---
-ALTER TABLE `albums`
-  ADD PRIMARY KEY (`isbn`);
 --
 -- Base de données :  `bd2`
 --
@@ -117,7 +108,9 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `coloriste` varchar(20) DEFAULT NULL,
   `num_editeur` int(11) NOT NULL,
   `annee_edition` int(11) DEFAULT NULL,
-  `prix` double NOT NULL
+  `prix` double NOT NULL,
+  PRIMARY KEY (`isbn`),
+  KEY `fk_edi` (`num_editeur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -180,7 +173,8 @@ CREATE TABLE IF NOT EXISTS `editeurs` (
   `num` int(11) NOT NULL,
   `nom` varchar(20) NOT NULL,
   `adresse` varchar(30) DEFAULT NULL,
-  `pays` char(1) NOT NULL
+  `pays` char(1) NOT NULL,
+  PRIMARY KEY (`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -200,22 +194,6 @@ INSERT INTO `editeurs` (`num`, `nom`, `adresse`, `pays`) VALUES
 (10, 'Jacobs', NULL, 'a');
 
 --
--- Index pour les tables exportées
---
-
---
--- Index pour la table `albums`
---
-ALTER TABLE `albums`
-  ADD PRIMARY KEY (`isbn`), ADD KEY `fk_edi` (`num_editeur`);
-
---
--- Index pour la table `editeurs`
---
-ALTER TABLE `editeurs`
-  ADD PRIMARY KEY (`num`);
-
---
 -- Contraintes pour les tables exportées
 --
 
@@ -223,7 +201,7 @@ ALTER TABLE `editeurs`
 -- Contraintes pour la table `albums`
 --
 ALTER TABLE `albums`
-ADD CONSTRAINT `albums_ibfk_1` FOREIGN KEY (`num_editeur`) REFERENCES `editeurs` (`num`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `albums_ibfk_1` FOREIGN KEY (`num_editeur`) REFERENCES `editeurs` (`num`) ON UPDATE CASCADE;
 --
 -- Base de données :  `bd3`
 --
@@ -240,7 +218,9 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `serie` varchar(20) DEFAULT NULL,
   `num_editeur` int(11) NOT NULL,
   `annee_edition` int(11) DEFAULT NULL,
-  `prix` double NOT NULL
+  `prix` double NOT NULL,
+  PRIMARY KEY (`isbn`),
+  KEY `fk_edi` (`num_editeur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -303,7 +283,8 @@ CREATE TABLE IF NOT EXISTS `auteurs` (
   `num` int(11) NOT NULL,
   `nom` varchar(20) DEFAULT NULL,
   `adresse` varchar(30) DEFAULT NULL,
-  `e_mail` varchar(30) NOT NULL
+  `e_mail` varchar(30) NOT NULL,
+  PRIMARY KEY (`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -339,7 +320,8 @@ CREATE TABLE IF NOT EXISTS `editeurs` (
   `num` int(11) NOT NULL,
   `nom` varchar(20) NOT NULL,
   `adresse` varchar(30) DEFAULT NULL,
-  `pays` char(1) NOT NULL
+  `pays` char(1) NOT NULL,
+  PRIMARY KEY (`num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -367,7 +349,9 @@ INSERT INTO `editeurs` (`num`, `nom`, `adresse`, `pays`) VALUES
 CREATE TABLE IF NOT EXISTS `participations` (
   `isbn` char(14) NOT NULL,
   `num_auteur` int(11) NOT NULL,
-  `participe` char(1) NOT NULL
+  `participe` char(1) NOT NULL,
+  PRIMARY KEY (`isbn`,`num_auteur`,`participe`),
+  KEY `fk_aut` (`num_auteur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -469,34 +453,6 @@ INSERT INTO `participations` (`isbn`, `num_auteur`, `participe`) VALUES
 ('2-8031-3900-6', 17, 'd');
 
 --
--- Index pour les tables exportées
---
-
---
--- Index pour la table `albums`
---
-ALTER TABLE `albums`
-  ADD PRIMARY KEY (`isbn`), ADD KEY `fk_edi` (`num_editeur`);
-
---
--- Index pour la table `auteurs`
---
-ALTER TABLE `auteurs`
-  ADD PRIMARY KEY (`num`);
-
---
--- Index pour la table `editeurs`
---
-ALTER TABLE `editeurs`
-  ADD PRIMARY KEY (`num`);
-
---
--- Index pour la table `participations`
---
-ALTER TABLE `participations`
-  ADD PRIMARY KEY (`isbn`,`num_auteur`,`participe`), ADD KEY `fk_aut` (`num_auteur`);
-
---
 -- Contraintes pour les tables exportées
 --
 
@@ -504,14 +460,14 @@ ALTER TABLE `participations`
 -- Contraintes pour la table `albums`
 --
 ALTER TABLE `albums`
-ADD CONSTRAINT `albums_ibfk_1` FOREIGN KEY (`num_editeur`) REFERENCES `editeurs` (`num`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `albums_ibfk_1` FOREIGN KEY (`num_editeur`) REFERENCES `editeurs` (`num`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `participations`
 --
 ALTER TABLE `participations`
-ADD CONSTRAINT `participations_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `albums` (`isbn`) ON UPDATE CASCADE,
-ADD CONSTRAINT `participations_ibfk_2` FOREIGN KEY (`num_auteur`) REFERENCES `auteurs` (`num`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `participations_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `albums` (`isbn`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `participations_ibfk_2` FOREIGN KEY (`num_auteur`) REFERENCES `auteurs` (`num`) ON UPDATE CASCADE;
 --
 -- Base de données :  `php_project`
 --
@@ -525,8 +481,19 @@ ADD CONSTRAINT `participations_ibfk_2` FOREIGN KEY (`num_auteur`) REFERENCES `au
 CREATE TABLE IF NOT EXISTS `answers` (
   `enrolment` varchar(45) NOT NULL,
   `query_id` int(11) NOT NULL,
-  `answer` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `answer` varchar(255) NOT NULL,
+  PRIMARY KEY (`enrolment`,`query_id`),
+  KEY `fk_students_has_queries_queries1_idx` (`query_id`),
+  KEY `fk_students_has_queries_students1_idx` (`enrolment`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `answers`
+--
+
+INSERT INTO `answers` (`enrolment`, `query_id`, `answer`) VALUES
+('10084', 1, 'select * from bd1.albums'),
+('10084', 2, 'select * from bd1.albums');
 
 -- --------------------------------------------------------
 
@@ -535,18 +502,18 @@ CREATE TABLE IF NOT EXISTS `answers` (
 --
 
 CREATE TABLE IF NOT EXISTS `levels` (
-  `id_levels` int(11) NOT NULL,
+  `id_levels` int(11) NOT NULL AUTO_INCREMENT,
   `level_nb` varchar(45) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id_levels`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `levels`
 --
 
 INSERT INTO `levels` (`id_levels`, `level_nb`, `description`) VALUES
-(1, '1', 'AE86'),
-(2, '2', 'GT86'),
+(2, NULL, NULL),
 (3, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -556,14 +523,27 @@ INSERT INTO `levels` (`id_levels`, `level_nb`, `description`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `queries` (
-  `query_id` int(11) NOT NULL,
+  `query_id` int(11) NOT NULL AUTO_INCREMENT,
   `query_nb` varchar(45) NOT NULL,
   `question` varchar(255) DEFAULT NULL,
   `num_level` varchar(45) DEFAULT NULL,
   `id_level` int(11) NOT NULL,
   `author` varchar(255) DEFAULT NULL,
-  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `topic` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`query_id`),
+  KEY `fk_queries_levels_idx` (`id_level`),
+  KEY `fk_queries_teachers1_idx` (`author`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `queries`
+--
+
+INSERT INTO `queries` (`query_id`, `query_nb`, `question`, `num_level`, `id_level`, `author`, `last_update`, `topic`) VALUES
+(1, '1', 'toutes les bd ', '45 ', 2, NULL, '2015-05-08 22:50:39', NULL),
+(2, '1', 'toutes les bd ', '45 ', 2, NULL, '2015-05-08 22:50:39', NULL),
+(3, '3', 'qsfd', NULL, 2, NULL, '2015-05-08 23:08:32', NULL);
 
 -- --------------------------------------------------------
 
@@ -572,10 +552,11 @@ CREATE TABLE IF NOT EXISTS `queries` (
 --
 
 CREATE TABLE IF NOT EXISTS `students` (
-  `enrolment` varchar(45) CHARACTER SET utf8 NOT NULL,
-  `name` varchar(90) CHARACTER SET utf8 NOT NULL,
-  `surname` varchar(90) CHARACTER SET utf8 NOT NULL,
-  `password` varchar(45) CHARACTER SET utf8 DEFAULT NULL
+  `enrolment` varchar(45) CHARACTER SET latin1 NOT NULL,
+  `name` varchar(90) COLLATE utf8_bin NOT NULL,
+  `surname` varchar(90) COLLATE utf8_bin NOT NULL,
+  `password` varchar(45) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`enrolment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
@@ -589,21 +570,21 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('10682', 'TONNEAU', 'Thomas', NULL),
 ('11628', 'DALMAU FORCANO', 'Marc', NULL),
 ('11762', 'TECHY', 'Martin', NULL),
-('12241', 'EL YAKOUBI', 'Iâtimadtimad', NULL),
-('12306', 'BOCK', 'Benoîtt', NULL),
+('12241', 'EL YAKOUBI', 'IÃ¢timadtimad', NULL),
+('12306', 'BOCK', 'BenoÃ®tt', NULL),
 ('12330', 'DRIESSEN', 'Christophe', NULL),
-('12341', 'GÉRARD', 'Nicolas-Andrea', NULL),
+('12341', 'GÃ‰RARD', 'Nicolas-Andrea', NULL),
 ('12370', 'ANNICCHIARICO', 'Vincenzo', NULL),
 ('12396', 'TRUONG', 'Vinh Kien', NULL),
-('12493', 'SINON', 'Clément', NULL),
-('12494', 'GONEN', 'Gültekinltekin', NULL),
+('12493', 'SINON', 'ClÃ©ment', NULL),
+('12494', 'GONEN', 'GÃ¼ltekinltekin', NULL),
 ('12533', 'ERMGODTS', 'Christopher', NULL),
 ('12554', 'KARABAG', 'Umid', NULL),
 ('12604', 'MAHI', 'Samia', NULL),
-('12730', 'GÉRARD', 'Florian', NULL),
+('12730', 'GÃ‰RARD', 'Florian', NULL),
 ('12732', 'SOUSA DOS SANTOS', 'Alexandre', NULL),
 ('12849', 'ISHIMWE', 'Remy', NULL),
-('12935', 'DÉSÉNEPART', 'Valentin', NULL),
+('12935', 'DÃ‰SÃ‰NEPART', 'Valentin', NULL),
 ('13179', 'GOBEAUX', 'Thomas', NULL),
 ('13528', 'HANSON', 'Pierre-Yves', NULL),
 ('13644', 'VERLANT', 'Antoine', NULL),
@@ -614,7 +595,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('13949', 'VAN LITHAUT', 'Romain', NULL),
 ('13986', 'RENSON', 'Gilles', NULL),
 ('14051', 'DJEDIDI', 'Hichem', NULL),
-('14053', 'BUDAK', 'Stéphane', NULL),
+('14053', 'BUDAK', 'StÃ©phane', NULL),
 ('14129', 'de VILLENFAGNE de VOGELSANCK', 'Gaspard', NULL),
 ('14192', 'NYEEM', 'Mohammad', NULL),
 ('14243', 'BOGDANOVIC', 'Stefan', NULL),
@@ -623,31 +604,31 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('14558', 'ROCHEZ', 'Arnaud', NULL),
 ('14973', 'IRANDOUST', 'Marzieh', NULL),
 ('15172', 'OSTE', 'Nicolas', NULL),
-('15319', 'GRIMMONPRÉ', 'Romain', NULL),
+('15319', 'GRIMMONPRÃ‰', 'Romain', NULL),
 ('15324', 'MAES', 'Timothy', NULL),
 ('15774', 'ASLI', 'Rachid', NULL),
 ('15779', 'BELHARCH', 'Hicham', NULL),
 ('15781', 'd''OULTREMONT', 'Matthieu', NULL),
 ('15782', 'PIERRE', 'Anthony', NULL),
 ('15783', 'BAKKALI KARFA', 'Nadir', NULL),
-('15793', 'TASYÜREK', 'Emre', NULL),
+('15793', 'TASYÃœREK', 'Emre', NULL),
 ('15794', 'RAMOS NEVES', 'Jonathan', NULL),
 ('15795', 'LE CLERCQ', 'Mike', NULL),
 ('15806', 'SAMELSON', 'Jonathan', NULL),
 ('15810', 'DUVILLIER', 'Romain', NULL),
 ('15821', 'YE', 'Sheng Hao', NULL),
-('15822', 'BOUVIN', 'Timothéee', NULL),
-('15824', 'TRéMOUROUX', 'Antoine', NULL),
-('15825', 'BOUGAOU', 'Noé', NULL),
-('15834', 'LEROY', 'Gaëll', NULL),
+('15822', 'BOUVIN', 'TimothÃ©ee', NULL),
+('15824', 'TRÃ©MOUROUX', 'Antoine', NULL),
+('15825', 'BOUGAOU', 'NoÃ©', NULL),
+('15834', 'LEROY', 'GaÃ«ll', NULL),
 ('15835', 'MOLINGHEN', 'Yannick', NULL),
 ('15892', 'CATHERINE', 'Thomas', NULL),
 ('15893', 'DE LA CRUZ MALLADA', 'Jimmy', NULL),
 ('15902', 'BOTTEMANNE', 'Fany', NULL),
 ('15905', 'GOLMAR LUQUE', 'Diego', NULL),
 ('15907', 'CHARLIER', 'Anthony', NULL),
-('15918', 'ERKUL', 'Michaëll', NULL),
-('15921', 'ERYÖRÜK', 'Muharrem', NULL),
+('15918', 'ERKUL', 'MichaÃ«ll', NULL),
+('15921', 'ERYÃ–RÃœK', 'Muharrem', NULL),
 ('15997', 'T''KINDT', 'Saifeddine', NULL),
 ('16000', 'COOLS', 'Alexandre', NULL),
 ('16096', 'FILLEUR', 'Thibault', NULL),
@@ -657,12 +638,12 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('16200', 'LESPINOIS', 'Nicolas', NULL),
 ('16206', 'YALIM', 'Sevag', NULL),
 ('16241', 'DELHAYE', 'Gabriel', NULL),
-('16258', 'FRÉMONTMONT', 'Jonathan', NULL),
+('16258', 'FRÃ‰MONTMONT', 'Jonathan', NULL),
 ('16268', 'DELWART', 'Valentin', NULL),
-('16273', 'STRAUVEN', 'Mélissa', NULL),
+('16273', 'STRAUVEN', 'MÃ©lissa', NULL),
 ('16320', 'DOS SANTOS', 'Bastien', NULL),
 ('16363', 'NGUYEN', 'Dat Toan', NULL),
-('16372', 'LONCIN', 'Sébastien', NULL),
+('16372', 'LONCIN', 'SÃ©bastien', NULL),
 ('16397', 'MANIET', 'Alexandre', NULL),
 ('16399', 'MANIET', 'Antoine', NULL),
 ('16406', 'MZOUGHI', 'Meriam', NULL),
@@ -670,7 +651,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('16415', 'BEVERNAGE', 'Rudy', NULL),
 ('16419', 'ANTHOONS', 'Nicolas', NULL),
 ('16421', 'WAGEMANS', 'Jeremy', NULL),
-('16429', 'MAYNÉ', 'Lonny', NULL),
+('16429', 'MAYNÃ‰', 'Lonny', NULL),
 ('16432', 'DURIEU', 'Emilien', NULL),
 ('16440', 'de BURLET', 'Marc', NULL),
 ('16441', 'YAKOUB', 'Jacques', NULL),
@@ -679,20 +660,20 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('16445', 'BLANCKAERT', 'Claire', NULL),
 ('16448', 'TIRCHER', 'Kyrill', NULL),
 ('16451', 'GARCIA AUGUSTO', 'Marcos', NULL),
-('16456', 'RIGA', 'Sébastien', NULL),
-('16461', 'GÜNDES', 'Vartan', NULL),
+('16456', 'RIGA', 'SÃ©bastien', NULL),
+('16461', 'GÃœNDES', 'Vartan', NULL),
 ('16462', 'DENUIT', 'Maxime', NULL),
 ('16464', 'JANSSENS', 'Thibaut', NULL),
 ('16466', 'GAILLET', 'Mike', NULL),
 ('16569', 'DECLERCQ', 'Benjamin', NULL),
-('16656', 'PLACE', 'Sébastien', NULL),
-('16824', 'LEBON', 'Sébastien', NULL),
+('16656', 'PLACE', 'SÃ©bastien', NULL),
+('16824', 'LEBON', 'SÃ©bastien', NULL),
 ('16842', 'DE SPIEGELAERE', 'Louis', NULL),
 ('17000', 'BLONDEAU', 'Brendan', NULL),
 ('17026', 'CHRISTODOULOU de GRAILLET', 'Nicolas', NULL),
 ('17118', 'RONSMANS', 'Thomas', NULL),
 ('17121', 'MACASPAC', 'Marc-Kevin', NULL),
-('17188', 'NGUYEN', 'Thiên Toàn', NULL),
+('17188', 'NGUYEN', 'ThiÃªn ToÃ n', NULL),
 ('17215', 'DEPRAETE', 'Adeline', NULL),
 ('17218', 'ANNIA', 'Imad', NULL),
 ('17221', 'LAMBRICHT', 'Antoine', NULL),
@@ -705,7 +686,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('17451', 'MASSART', 'Woody', NULL),
 ('17457', 'ALP', 'Mustafa', NULL),
 ('17480', 'PIERRE', 'Benjamin', NULL),
-('17500', 'TOUMI', 'Yèssine', NULL),
+('17500', 'TOUMI', 'YÃ¨ssine', NULL),
 ('17523', 'AMETI', 'Rufat', NULL),
 ('17528', 'OVAERT', 'Lionel', NULL),
 ('17543', 'ABAJTOUR', 'Ilyas', NULL),
@@ -721,7 +702,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('17662', 'GAILLET', 'Pierre-Paul', NULL),
 ('17664', 'MOUNIR', 'Hamza', NULL),
 ('17713', 'NGUYEN', 'Phu Cuong', NULL),
-('17736', 'NSENDA THAMBWE', 'Hervé-Claude', NULL),
+('17736', 'NSENDA THAMBWE', 'HervÃ©-Claude', NULL),
 ('17738', 'VANCAMPENHAULT', 'Anthony', NULL),
 ('17765', 'AERTS', 'Mathieu', NULL),
 ('17766', 'BAKALEM', 'Abdelhak', NULL),
@@ -731,11 +712,11 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('17871', 'DELLOT', 'Jonathan', NULL),
 ('17879', 'GOSSELIN', 'Louis', NULL),
 ('17900', 'EZAABOUJI', 'Zineb', NULL),
-('17924', 'YALÇINÖZ', 'Serhat', NULL),
+('17924', 'YALÃ‡INÃ–Z', 'Serhat', NULL),
 ('17931', 'ZOAO', 'Kevin', NULL),
 ('17972', 'VELARDE VELARDE', 'Bryan', NULL),
-('17977', 'SCHWEISTHAL', 'Jean-François', NULL),
-('17996', 'DEGRÈVE', 'Olivier', NULL),
+('17977', 'SCHWEISTHAL', 'Jean-FranÃ§ois', NULL),
+('17996', 'DEGRÃˆVE', 'Olivier', NULL),
 ('17998', 'BERTOLINI', 'Nicolas', NULL),
 ('18073', 'CANOOT', 'Olivier', NULL),
 ('18074', 'BASHIR', 'Ahmad', NULL),
@@ -744,7 +725,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('18098', 'HOSSEINI', 'Seyyed', NULL),
 ('18109', 'FANNA', 'Maxime', NULL),
 ('18134', 'BOONEN', 'Bastien', NULL),
-('18145', 'STEVENS', 'Loïc', NULL),
+('18145', 'STEVENS', 'LoÃ¯c', NULL),
 ('18160', 'COTTON', 'Pierric', NULL),
 ('18164', 'DE SUTTER', 'Willi', NULL),
 ('18174', 'VAN GREVENSTEIN', 'Fredrik', NULL),
@@ -756,7 +737,7 @@ INSERT INTO `students` (`enrolment`, `name`, `surname`, `password`) VALUES
 ('18284', 'DOCQUIER', 'Arnaud', NULL),
 ('18320', 'VERTONGHEN', 'Renaud', NULL),
 ('18367', 'EVRARD', 'Amaury', NULL),
-('18405', 'DESMET', 'Jérémy', NULL),
+('18405', 'DESMET', 'JÃ©rÃ©my', NULL),
 ('18407', 'SAIFI', 'Ayoub', NULL),
 ('18450', 'CIKU', 'Alan', NULL),
 ('18551', 'LARBI', 'Youssef', NULL),
@@ -780,8 +761,9 @@ CREATE TABLE IF NOT EXISTS `teachers` (
   `login` varchar(255) NOT NULL,
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
-  `password` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `password` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`login`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `teachers`
@@ -789,52 +771,9 @@ CREATE TABLE IF NOT EXISTS `teachers` (
 
 INSERT INTO `teachers` (`login`, `name`, `surname`, `password`) VALUES
 ('chooc', 'Choquet', 'Olivier', 'iwashere'),
-('colje', 'Collinet', 'Jean-Luc\r', ''),
-('lecem', 'Leconte', 'Emmeline\r', '');
+('colje', 'Collinet', 'Jean-Luc', NULL),
+('lecem', 'Leconte', 'Emmeline', NULL);
 
---
--- Index pour les tables exportées
---
-
---
--- Index pour la table `answers`
---
-ALTER TABLE `answers`
-  ADD PRIMARY KEY (`enrolment`,`query_id`), ADD KEY `fk_students_has_queries_queries1_idx` (`query_id`), ADD KEY `fk_students_has_queries_students1_idx` (`enrolment`);
-
---
--- Index pour la table `levels`
---
-ALTER TABLE `levels`
-  ADD PRIMARY KEY (`id_levels`);
-
---
--- Index pour la table `queries`
---
-ALTER TABLE `queries`
-  ADD PRIMARY KEY (`query_id`), ADD KEY `fk_queries_levels_idx` (`id_level`), ADD KEY `fk_queries_teachers1_idx` (`author`);
-
---
--- Index pour la table `students`
---
-ALTER TABLE `students`
-  ADD PRIMARY KEY (`enrolment`);
-
---
--- Index pour la table `teachers`
---
-ALTER TABLE `teachers`
-  ADD PRIMARY KEY (`login`);
-
---
--- AUTO_INCREMENT pour les tables exportées
---
-
---
--- AUTO_INCREMENT pour la table `levels`
---
-ALTER TABLE `levels`
-  MODIFY `id_levels` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- Contraintes pour les tables exportées
 --
@@ -843,15 +782,18 @@ ALTER TABLE `levels`
 -- Contraintes pour la table `answers`
 --
 ALTER TABLE `answers`
-ADD CONSTRAINT `fk_students_has_queries_queries1` FOREIGN KEY (`query_id`) REFERENCES `queries` (`query_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_students_has_queries_students1` FOREIGN KEY (`enrolment`) REFERENCES `students` (`enrolment`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_query_id` FOREIGN KEY (`query_id`) REFERENCES `queries` (`query_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_students_has_queries_students1` FOREIGN KEY (`enrolment`) REFERENCES `students` (`enrolment`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `queries`
 --
 ALTER TABLE `queries`
-ADD CONSTRAINT `fk_queries_levels` FOREIGN KEY (`id_level`) REFERENCES `levels` (`id_levels`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_queries_teachers1` FOREIGN KEY (`author`) REFERENCES `teachers` (`login`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_queries_levels` FOREIGN KEY (`id_level`) REFERENCES `levels` (`id_levels`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_queries_teachers1` FOREIGN KEY (`author`) REFERENCES `teachers` (`login`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+--
+-- Base de données :  `test`
+--
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

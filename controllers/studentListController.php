@@ -14,9 +14,11 @@ class studentListController
             header('Location:index.php?');
             die();
         }
-        
+        $students = array();
+		$students=Db::getInstance()->selectStudents();
         require_once('views/header.php');
         require_once('views/menuTeacher.php');
+		require_once('views/listStudentTeacher.php');
     }
 
 }
