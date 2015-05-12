@@ -19,6 +19,7 @@
         <label for="lvlDescription">Description</label>
         <input class="" type="textarea" name="lvlDescription">
 		<input type="file" name="userFile">
+        <br>
 		<input type="submit" value="Submit file">
 	</form>
 </div>

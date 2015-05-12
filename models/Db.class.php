@@ -190,9 +190,22 @@ class Db
 			}
 		}
 		return $table ;
+	}	
+
+    // checks if there is a level having the same name as the user input 
+	public function levelExists($name , $num){
+		$query = "SELECT COUNT(id_levels) as count FROM levels WHERE description = '" . $name."' AND level_nb    = '". $num ."' " ;
+		$result = $this->_db->query($query);
+		$row = $result->fetch();
+		return intval($row->count) > 0; 
 	}
 	
-	
-	
+    // insert a new level into the levels table 
+    public function insertNewLevel($name , $num)
+    {
+        $query = 'INSERT INTO levels (`level_nb`, `description` ) VALUES (' ."'". $num ."'". ',' .'"'. $name.'"'.')';
+        $this->_db->prepare($query)->execute();
+    }
+
 }
 ?>
