@@ -27,8 +27,8 @@ class Db
 
     public function teacherExists($no)
     {
-        $query = 'SELECT * from teachers WHERE login = ' . '"' . $no . '"';
-        $result = $this->_db->query($query); 
+        $query         = 'SELECT * from teachers WHERE login = ' . '"' . $no . '"';
+        $result        = $this->_db->query($query); 
         $authenticated = false ; 
         if ($result->rowcount()!=0) {
             $authenticated = true;
@@ -38,7 +38,7 @@ class Db
 
     public function studentExists($no)
     {
-        $query = 'SELECT * FROM students WHERE enrolment='. '"' . $no . '"';
+        $query  = 'SELECT * FROM students WHERE enrolment='. '"' . $no . '"';
         $result = $this->_db->query($query); 
         $authenticated = false ; 
         if ($result->rowcount()!=0) {
@@ -49,18 +49,18 @@ class Db
 
     public function selectTeacher($id)
     {
-        $query = 'SELECT * FROM teachers WHERE login=' . '"' . $id . '"' ; 
+        $query  = 'SELECT * FROM teachers WHERE login=' . '"' . $id . '"' ; 
         $result = $this->_db->query($query);
-        $row = $result->fetch();	
+        $row    = $result->fetch();	
         return new Teacher($row->login, $row->name , $row->surname , $row->password);
     }
 
 
     public function selectStudent($id)
     {
-        $query = 'SELECT * FROM students WHERE enrolment=' . '"' . $id . '"' ; 
+        $query  = 'SELECT * FROM students WHERE enrolment=' . '"' . $id . '"' ; 
         $result = $this->_db->query($query);
-        $row = $result->fetch();	
+        $row    = $result->fetch();	
         return new Student($row->enrolment , $row->name , $row->surname , $row->password);
     }
 
@@ -97,7 +97,7 @@ class Db
         $teachersData = 'data/professeurs.csv';
 
         //students
-        $studentsQuery = 'SELECT * FROM students ';         
+        $studentsQuery  = 'SELECT * FROM students ';         
         $studentsResult = $this->_db->query($studentsQuery);		
         if($studentsResult->rowcount() == 0)
         {
@@ -113,7 +113,7 @@ class Db
         }
 
         // teachers
-        $teachersQuery = 'SELECT * FROM teachers ';         
+        $teachersQuery  = 'SELECT * FROM teachers ';         
         $teachersResult = $this->_db->query($teachersQuery);		
         if($teachersResult->rowcount() == 0)
         {
@@ -130,9 +130,9 @@ class Db
 	
 	public function selectStudents()
 	{
-		$query= "SELECT * FROM php_project.students";
-		$result= $this->_db->query($query);
-		$table=array();
+		$query  = "SELECT * FROM php_project.students";
+		$result = $this->_db->query($query);
+		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
 				$table[] = array ($row->enrolment, $row->name, $row->surname , $row->password , $this->getPercentage($row->enrolment) );
@@ -143,21 +143,21 @@ class Db
 	
 	public function getPercentage($enrolment)
 	{
-		$query = 'SELECT COUNT(DISTINCT answers.enrolment) / COUNT(DISTINCT queries.query_id) as result
-			      FROM answers , queries 
-				  WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
+		$query  = 'SELECT COUNT(DISTINCT answers.enrolment) / COUNT(DISTINCT queries.query_id) as result
+			       FROM answers , queries 
+				   WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
         $result = $this->_db->query($query);
-        $row = $result->fetch();	
+        $row    = $result->fetch();	
 		return floatval($row->result)  * 100 ;
 	}
 	
 	public function getStudentAnswers($enrolment)
 	{
-		$query = 'SELECT DISTINCT id_level  , query_nb  , question , answer
+		$query  = 'SELECT DISTINCT id_level  , query_nb  , question , answer
 			      FROM answers , queries 
 				  WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
         $result = $this->_db->query($query);
-		$table=array();
+		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
 				$table[] = array ($row->id_level, $row->query_nb, $row->question, $row->answer);
@@ -168,9 +168,9 @@ class Db
 	
 	public function selectLevels()
 	{
-		$query = 'SELECT `id_levels`, `level_nb`, `description` FROM `levels` '; 
+		$query  = 'SELECT `id_levels`, `level_nb`, `description` FROM `levels` '; 
         $result = $this->_db->query($query);
-		$table=array();
+		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
 				$table[] = array ($row->id_levels,$row->level_nb,$row->description);
@@ -181,12 +181,12 @@ class Db
 	
 	public function selectQueries($id)
 	{
-		$query = 'SELECT `query_id`, `query_nb`, `question`, `num_level`, `id_level`, `author`, `last_update` , topic FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
+		$query  = 'SELECT  `query_nb`, `topic`, `question`, `query`, `num_level` FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
         $result = $this->_db->query($query);
-		$table=array();
+		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
-				$table[] = array ($row->query_id,$row->query_nb,$row->question,$row->num_level,$row->id_level, $row->author, $row->last_update , $row->topic);
+				$table[] = array ($row->query_nb,$row->topic,$row->question,$row->query, $row->num_level);
 			}
 		}
 		return $table ;
@@ -194,18 +194,52 @@ class Db
 
     // checks if there is a level having the same name as the user input 
 	public function levelExists($name , $num){
-		$query = "SELECT COUNT(id_levels) as count FROM levels WHERE description = '" . $name."' AND level_nb    = '". $num ."' " ;
+		$query  = "SELECT COUNT(id_levels) as res FROM levels WHERE description = '" . $name."' AND level_nb    = '". $num ."' " ;
 		$result = $this->_db->query($query);
-		$row = $result->fetch();
-		return intval($row->count) > 0; 
+		$row    = $result->fetch();
+		return intval($row->res) > 0; 
 	}
 	
     // insert a new level into the levels table 
-    public function insertNewLevel($name , $num)
+    public function insertNewLevel($num, $name)
     {
         $query = 'INSERT INTO levels (`level_nb`, `description` ) VALUES (' ."'". $num ."'". ',' .'"'. $name.'"'.')';
         $this->_db->prepare($query)->execute();
     }
+
+    // get the latest id_level inserted in the level table 
+    public function selectLatestLevel()
+    {
+        $query  = "SELECT id_levels FROM levels ORDER BY id_levels DESC LIMIT 1";
+        $result = $this->_db->query($query);
+        $row    = $result->fetch(); 
+        return $row->id_levels;
+    }
+    
+    // selects the id level by matching it with a description and a num      
+    public function selectLevel($lvlNum , $lvlName)
+    {
+        $query  = "SELECT id_levels FROM levels WHERE description = " ."'". $lvlName ."'". " AND level_nb = "."'".$lvlNum."'" ;  
+        $result = $this->_db->query($query);
+        $row    = $result->fetch();
+        return $row->id_levels ; 
+    }
+    
+    // insert a query into the queries table 
+    public function insertQuery($query_nb, $topic , $question , $query , $num_level , $id_level )
+    {
+       // we use quote($var)  so special characters are escaped 
+        $teacher = $_SESSION['login'];
+        $query = "INSERT INTO queries (query_nb , topic , question , query , id_level , num_level  ) VALUES (".
+              $this->_db->quote($query_nb)   . ","
+             .$this->_db->quote($topic)      . "," 
+             .$this->_db->quote($question)   . "," 
+             .$this->_db->quote($query)      . ","
+             .$this->_db->quote($num_level)  . "," 
+             .$this->_db->quote($id_level)   . ")";      
+        $this->_db->prepare($query)->execute();
+    }
+
 
 }
 ?>
