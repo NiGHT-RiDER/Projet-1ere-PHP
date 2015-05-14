@@ -179,14 +179,16 @@ class Db
 		return $table ;
 	}
 	
+    // select all queries from a specified level 
 	public function selectQueries($id)
 	{
-		$query  = 'SELECT  `query_nb`, `topic`, `question`, `query`, `num_level` FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
+		$query  = 'SELECT  query_id ,`query_nb`, `topic`, `question`, `query`, `num_level` ,`author`, `last_update` FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
         $result = $this->_db->query($query);
 		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
-				$table[] = array ($row->query_nb,$row->topic,$row->question,$row->query, $row->num_level);
+				$table[] = array ($row->query_id , $row->question , $row->query_nb, $row->topic  ,  $row->query,
+                                  $row->author , $row->last_update );
 			}
 		}
 		return $table ;
@@ -229,16 +231,19 @@ class Db
     public function insertQuery($query_nb, $topic , $question , $query , $num_level , $id_level )
     {
        // we use quote($var)  so special characters are escaped 
+        $update = null ; 
         $teacher = $_SESSION['login'];
-        $query = "INSERT INTO queries (query_nb , topic , question , query , id_level , num_level  ) VALUES (".
+        $query = "INSERT INTO queries (query_nb , topic , question , query , id_level , num_level , last_update ) VALUES (".
               $this->_db->quote($query_nb)   . ","
              .$this->_db->quote($topic)      . "," 
              .$this->_db->quote($question)   . "," 
              .$this->_db->quote($query)      . ","
              .$this->_db->quote($num_level)  . "," 
-             .$this->_db->quote($id_level)   . ")";      
+             .$this->_db->quote($id_level)  . "," 
+             .$this->_db->quote($update) . ")";      
         $this->_db->prepare($query)->execute();
     }
+
 
 
 }
