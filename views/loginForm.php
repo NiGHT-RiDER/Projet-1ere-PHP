@@ -11,7 +11,7 @@
                 <br></br>
                 <br></br>
                 <label for="login_form">Votre login</label>
-                <input class="" type="email" placeholder="login" name="username">
+                <input class="" type="text" placeholder="login" name="username">
                 <label for="password">Votre mot de passe</label>
                 <input class="" type="password" placeholder="mot de passe" name="password">
                 <br></br>

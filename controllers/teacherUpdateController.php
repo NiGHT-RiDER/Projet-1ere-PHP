@@ -1,6 +1,7 @@
 <?php
-class studentHomeController 
+class teacherUpdateController
 {
+
 
 /***
  *     __   __        ___     __                                                     
@@ -14,22 +15,36 @@ class studentHomeController
  */
 
 
-    public function __construct()
+    
+	public function __construct()
     {
 
     }
 
     public function run()
     {
-        if(empty($_SESSION['authenticated']) || $_SESSION['userType'] != 'student')
+	
+        // initialise the empty variables 
+        $levelId      = '';
+        $queriesArray = array();   
+
+        // is the user a teacher ? is he already authenticated ?
+        if(empty($_SESSION['authenticated']) || $_SESSION['userType'] != 'teacher')
         {
             header('Location:index.php?');
             die();
         }
+
+        // if the level is selected then we take the queries 
+        if(isset($_POST['level']))
+        {
+            $queriesArray = Db::getInstance()->selectQueries($_POST['level']);
+        }
+
+        $levels = Db::getInstance()->selectLevels();
         require_once('views/header.php');
-        require_once('views/menuStudent.php');
+        require_once('views/menuTeacher.php');
+		require_once('views/updateQuestion.php');
     }
 
-
 }
-?>

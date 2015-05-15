@@ -1,6 +1,20 @@
 <?php
 class loginController 
 {
+	
+
+	/***
+	 *     __   __        ___     __                                                     
+	 *    |  \ /  \ |\ | |__     |__) \ /                                                
+	 *    |__/ \__/ | \| |___    |__)  |                                                 
+	 *                                                                                   
+	 *     __   __   __   __             __          __      __  ___  ___  ___           
+	 *    |__) /  \ / _` |  \  /\  |\ | /  \ \  / | /  `    /__`  |  |__  |__   /\  |\ | 
+	 *    |__) \__/ \__> |__/ /~~\ | \| \__/  \/  | \__,    .__/  |  |___ |    /~~\ | \| 
+	 *                                                                                   
+	 */
+
+
     public function __construct()
     {
 
@@ -8,6 +22,15 @@ class loginController
 
     public function run()
     {
+		// line used for not displaying the error concerning the undefined variable 
+		error_reporting(E_ERROR | E_PARSE);
+		
+		// defines the session variables used in the code to avoid errors
+		if(empty($_SESSION['authenticated'] ))
+			$_SESSION['authenticated'] = false;
+		if(empty($_SESSION['username']))
+			$_SESSION['username'] = "";
+	
         // notification variable created for the view  
         $notification='';
         // if a user is already authenticated we redirect him to the correct view 
@@ -19,7 +42,6 @@ class loginController
         } 
        
         // the user is currently not logged , we can proceed 
-        // test to see if the user if a teacher or a student otherwise refuse him the access
         $isTeacher = Db::getInstance()->teacherExists(htmlentities($_POST['username']));    
         $isStudent = Db::getInstance()->studentExists(htmlentities($_POST['username']));    
 
@@ -95,6 +117,7 @@ class loginController
         }
         require_once('views/header.php');
         require_once('views/loginForm.php');
+		
     }
 
     private function isFirstLogin($user)
