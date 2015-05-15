@@ -228,10 +228,6 @@ class Db
 		$query  = 'SELECT COUNT(DISTINCT answers.enrolment) / COUNT(DISTINCT queries.query_id) as result
 			       FROM answers , queries 
 				   WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
-<<<<<<< HEAD
-		
-=======
->>>>>>> b1904ec1fccd3f9737dd7e4533fba76b15c1ea19
         $result = $this->_db->query($query);
         $row    = $result->fetch();	
 		return floatval($row->result)  * 100 ;
@@ -239,17 +235,13 @@ class Db
 	
 	public function getStudentAnswers($enrolment)
 	{
-<<<<<<< HEAD
+
 		$query  = 'SELECT q.id_level , q.query_nb , q.question , 
 					(SELECT DISTINCT answer FROM answers  where enrolment = ' . '"' . $enrolment . '"' . '  AND answers.query_id = q.query_id) 
 					as answer 
 			      FROM queries  q
 				  WHERE q.query_id in (select query_id from answers where enrolment = ' . '"' . $enrolment . '"' . ') ' ; 
-=======
-		$query  = 'SELECT DISTINCT id_level  , query_nb  , question , answer
-			      FROM answers , queries 
-				  WHERE answers.enrolment=' . '"' . $enrolment . '"' ; 
->>>>>>> b1904ec1fccd3f9737dd7e4533fba76b15c1ea19
+
         $result = $this->_db->query($query);
 		$table  = array();
 		if ($result->rowCount() != 0){
@@ -276,23 +268,15 @@ class Db
     // select all queries from a specified level 
 	public function selectQueries($id)
 	{
-<<<<<<< HEAD
+
 		$query  = 'SELECT  * FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
-=======
-		$query  = 'SELECT  query_id ,`query_nb`, `topic`, `question`, `query`, `num_level` ,`author`, `last_update` FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
->>>>>>> b1904ec1fccd3f9737dd7e4533fba76b15c1ea19
+
         $result = $this->_db->query($query);
 		$table  = array();
 		if ($result->rowCount() != 0){
 			while($row = $result->fetch()){
-<<<<<<< HEAD
 				$table[] = new Query ($row->query_id , $row->query_nb , $row->topic, $row->id_level  ,  $row->num_level, 
                                   $row->question , $row->author , $row->last_update  , $row->query);
-								  
-=======
-				$table[] = array ($row->query_id , $row->question , $row->query_nb, $row->topic  ,  $row->query,
-                                  $row->author , $row->last_update );
->>>>>>> b1904ec1fccd3f9737dd7e4533fba76b15c1ea19
 			}
 		}
 		return $table ;
