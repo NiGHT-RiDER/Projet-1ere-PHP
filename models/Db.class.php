@@ -171,14 +171,14 @@ class Db
 			try{
 				$this->_db->prepare($query)->execute();
 			} catch (Exception $e) {
-				//var_dump($query);
+
 			}
 		}
 		
-    
+		// uses the csv in the data folder to import logins at startup 
+	
 		$studentsData = 'data/etudiants.csv';
         $teachersData = 'data/professeurs.csv';
-        //students
         $studentsQuery  = 'SELECT * FROM students ';         
         $studentsResult = $this->_db->query($studentsQuery);		
         if($studentsResult->rowcount() == 0)
@@ -241,7 +241,6 @@ class Db
 					as answer 
 			      FROM queries  q
 				  WHERE q.query_id in (select query_id from answers where enrolment = ' . '"' . $enrolment . '"' . ') ' ; 
-
         $result = $this->_db->query($query);
 		$table  = array();
 		if ($result->rowCount() != 0){
@@ -268,9 +267,7 @@ class Db
     // select all queries from a specified level 
 	public function selectQueries($id)
 	{
-
 		$query  = 'SELECT  * FROM `queries` WHERE  id_level =' . "'" .  $id ."'"; 
-
         $result = $this->_db->query($query);
 		$table  = array();
 		if ($result->rowCount() != 0){
@@ -332,7 +329,7 @@ class Db
         $this->_db->prepare($query)->execute();
     }
 	
-	//updates a question in the queries table by modifying the question , topic , number and query of it 
+
 	public function updateQuery($question , $query_nb , $topic , $query , $query_id , $author , $num_level)
 	{	
 		$query = 	"UPDATE `queries` 
