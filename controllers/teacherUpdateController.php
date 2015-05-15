@@ -1,6 +1,7 @@
 <?php
 class teacherUpdateController
 {
+<<<<<<< HEAD
 
 
 /***
@@ -23,7 +24,6 @@ class teacherUpdateController
 
     public function run()
     {
-	
         // initialise the empty variables 
         $levelId      = '';
         $queriesArray = array();   
@@ -45,6 +45,7 @@ class teacherUpdateController
         require_once('views/header.php');
         require_once('views/menuTeacher.php');
 		require_once('views/updateQuestion.php');
+
     }
 
 }

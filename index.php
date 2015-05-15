@@ -25,6 +25,7 @@ switch($action)
         require_once(CONTROLLER . 'logoutController.php');
         $controller = new logoutController() ; 
         break;
+<<<<<<< HEAD
 	// page containing the list of queries for the teacher so  he can update it  
     case 'updateQuestions':
         require_once(CONTROLLER . 'teacherUpdateController.php');
@@ -36,6 +37,13 @@ switch($action)
         $controller = new updateQuestionController() ; 
         break;
 	// teacher home page
+=======
+    // teacher startup page 
+    case 'updateQuestion':
+        require_once(CONTROLLER . 'teacherUpdateController.php');
+        $controller = new teacherUpdateController() ; 
+        break;
+>>>>>>> b1904ec1fccd3f9737dd7e4533fba76b15c1ea19
     case 'teacher':
         require_once(CONTROLLER . 'studentListController.php');
         $controller = new studentListController();

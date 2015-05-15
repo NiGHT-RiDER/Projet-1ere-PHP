@@ -2,7 +2,9 @@
 	<h3>Modification</h3>
 	
     <!-- form containing the select level of the page  -->
+
     <form method="post" name="level" action="index.php?action=updateQuestions">
+
 			<br>
 			<br>
 			<br>
@@ -18,6 +20,7 @@
     <!-- end of the form for the select level  -->
 
     <!-- start of the question update table -->
+
    	<form action="index.php?action=updateQuestionForm" method="post">
 		<table> 
 		<thead>
@@ -28,7 +31,9 @@
 				<th>Query</th>
 				<th>Auteur</th>
 				<th>Derniere mise a jour </th>
+
 				<th><input type="submit" name="delete" value="Modifier"></th>
+
 			</tr>
 		</thead>
 		<tbody>
@@ -40,8 +45,7 @@
 					<td><?php echo $queriesArray[$i]->query()?></td>
 					<td><?php echo $queriesArray[$i]->author()?></td>
 					<td><?php echo $queriesArray[$i]->lastUpdate()?></td>
-					
-					<td><input type="radio" name="query_id" value="<?php echo $queriesArray[$i]->queryId() ?>"></td>					
+					<td><input type="radio" name="query_id" value="<?php echo $queriesArray[$i]->queryId() ?>"></td>				
 				</tr>
 			<?php } ?>
 		</tbody>

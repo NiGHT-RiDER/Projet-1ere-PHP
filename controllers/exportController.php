@@ -2,6 +2,7 @@
 class exportController 
 {
 
+
 /***
  *     __   __        ___     __                                                     
  *    |  \ /  \ |\ | |__     |__) \ /                                                
@@ -12,6 +13,7 @@ class exportController
  *    |__) \__/ \__> |__/ /~~\ | \| \__/  \/  | \__,    .__/  |  |___ |    /~~\ | \| 
  *                                                                                   
  */
+
 
 
     public function __construct()
@@ -38,9 +40,9 @@ class exportController
             ob_end_clean();
             fwrite($output, ('num;theme;enonce;query;nb' . "\n" ));
             $rows = Db::getInstance()->selectQueries($_POST['csvExport']);
-
 			foreach ($rows as $query)
                 fwrite($output,  $query->queryNb() . ';' . $query->topic(). ';' . $query->question() . ';' . $query->query() . ';' . $query->numLevel(). "\n" );
+
             fclose($output);
             exit();
         }
