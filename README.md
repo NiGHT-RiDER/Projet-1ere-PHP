@@ -2,8 +2,7 @@ Projet 1ere PHP
 Site reimplement l'application utilise dans le cadre du cours d'IANARCH en 1ere
 ## Installation
 Le developpement s'est fait sur une machine Windows avec wamp , non teste sur d'autre configurations
-## Usage
-TODO: Write usage instructions
+
 ## Contributing
 1. Forkez le projet!
 2. Creez votre branche: `git checkout -b my-new-feature`
